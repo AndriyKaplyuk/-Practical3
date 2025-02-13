@@ -5,23 +5,21 @@ app = FastAPI()
 
 @app.get("/")
 def root():
-    return FileResponse("index.html")
-
+    return FileResponse("index.html", media_type="text/html")
 
 @app.post("/postdata")
-def postdata(number1 = Form(), act = Form(), number2=Form()):
-    n1 = float(number1)
-    n2 = float(number2)
-
+def postdata(number1: float = Form(), number2: float = Form(), act: str = Form()):  # Додаємо act у параметри
     if act == 'summ':
-        result = n1 + n2
+        result = number1 + number2
     elif act == 'minus':
-        result = n1 - n2
+        result = number1 - number2
     elif act == 'mult':
-        result = n1 * n2
+        result = number1 * number2
     elif act == 'div':
-        result = n1 / n2
+        if number2 == 0:
+            return {"error": "Division by zero is not allowed"}
+        result = number1 / number2
     else:
-        result = 'Operation impossible'
+        return {"error": "Invalid operation"}
 
     return {"result": result}
