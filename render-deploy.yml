@@ -1,0 +1,40 @@
+name: Test and Simulated Deploy
+
+on:
+  push:
+    branches:
+      - main  # Пайплайн запускається при пуші в main
+  pull_request:
+    branches:
+      - main  # Також перевіряє тести при створенні PR
+
+jobs:
+  run-tests:
+    name: Run Tests
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.11'  # Встановлює Python 3.11
+
+      - name: Install dependencies
+        run: |
+          pip install -r requirements.txt  # Встановлення залежностей
+          pip install pytest  # Додавання pytest, якщо ще немає
+
+      - name: Run tests
+        run: pytest  # Запуск тестів
+          
+  simulate-deploy:
+    name: Simulated Deploy
+    runs-on: ubuntu-latest
+    needs: run-tests  # Запускається тільки після успішного завершення тестів
+
+    steps:
+      - name: Simulate Deployment
+        run: echo "Deployed"
